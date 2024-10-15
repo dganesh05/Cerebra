@@ -3,7 +3,7 @@ import pandas as pd
 
 client = openai.OpenAI(api_key = 'key')
 
-def generate_message(prompt, n=3, temperature=1.2):
+def generate_message(prompt, n=1, temperature=1.2):
     completion = client.chat.completions.create(
         model="gpt-4o",
         messages=[
@@ -12,7 +12,7 @@ def generate_message(prompt, n=3, temperature=1.2):
             {"role": "user", "content": "Ensure that the messages are natural, friendly, and resemble everyday online conversations. Remember"
             "that greetings are not required."}
         ],
-        max_tokens=50,
+        max_tokens=20,
         temperature=temperature,
         n=n,
     )
@@ -20,7 +20,7 @@ def generate_message(prompt, n=3, temperature=1.2):
 
 data = []
 
-for _ in range(2):
+for _ in range(500):
     messages_0 = generate_message("Generate an informal Discord message that could not be answered by a bot using information "
     "documents provided by the Hackathon organizers.")
     for msg in messages_0:
@@ -33,6 +33,6 @@ for _ in range(2):
 
 df = pd.DataFrame(data, columns=['Message', 'Response'])
 
-print(df.head())
+#print(df.head())
 
 df.to_csv('discord_synthetic_data_llm.csv', index=False)
