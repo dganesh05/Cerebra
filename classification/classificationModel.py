@@ -22,16 +22,16 @@ class MessageDataset(torch.utils.data.Dataset):
 tokenizer = BertTokenizer.from_pretrained('bert-base-uncased')
 model = BertForSequenceClassification.from_pretrained('bert-base-uncased', num_labels=2)
 
-df = pd.read_csv('messages.csv')
+df = pd.read_csv('discord_synthetic_data_llm (6).csv')
 messages = df['Message'].tolist()
 labels = df['Response'].tolist()
 
-inputs = tokenizer(messages, padding=True, truncation=True, return_tensors='pt', max_length=512)
+inputs = tokenizer(messages, padding=True, truncation=True, return_tensors='pt', max_length=40)
 input_ids = inputs['input_ids']
 attention_masks = inputs['attention_mask']
 
-train_inputs, val_inputs, train_labels, val_labels, train_masks, val_masks = train_test_split(
-    input_ids, labels, attention_masks, test_size=0.2, random_state=42
+train_inputs, val_inputs, train_masks, val_masks, train_labels, val_labels = train_test_split(
+    input_ids, attention_masks, labels, test_size=0.2, random_state=42
 )
 
 train_dataset = MessageDataset(train_inputs, train_masks, train_labels)
@@ -59,3 +59,4 @@ trainer = Trainer(
 trainer.train()
 
 model.save_pretrained('./results')
+tokenizer.save_pretrained('./results')
